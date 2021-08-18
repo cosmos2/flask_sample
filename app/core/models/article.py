@@ -5,6 +5,7 @@ __all__ = (
     'Article',
     'article_schema',
     'articles_schema',
+    'article_schema_for_response',
 )
 
 
@@ -28,10 +29,18 @@ class ArticleSchema(ma.SQLAlchemySchema):
         include_fk = True
 
     id = ma.auto_field()
+    title = ma.auto_field()
     content = ma.auto_field()
     board_id = ma.auto_field()
-    user_id = ma.auto_field()
+
+
+class ArticleSchemaForResponse(ArticleSchema):
+    user_name = ma.Method('get_user_name')
+
+    def get_user_name(self, obj):
+        return obj.user.fullname if obj.user else None
 
 
 article_schema = ArticleSchema()
 articles_schema = ArticleSchema(many=True)
+article_schema_for_response = ArticleSchemaForResponse()
