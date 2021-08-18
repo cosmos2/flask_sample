@@ -12,9 +12,10 @@ class Article(BaseModel, db.Model):
     __tablename__ = 'articles'
 
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
     content = db.Column(db.Text, nullable=True)
-    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    board_id = db.Column(db.Integer, db.ForeignKey('boards.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
 
     # relations
     user = db.relationship('User', backref='article_set', lazy=True)

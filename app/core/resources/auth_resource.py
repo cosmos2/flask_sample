@@ -1,8 +1,7 @@
 from http import HTTPStatus
 
-from flask import request, jsonify
-from flask_login import login_required, logout_user
-from flask_login import login_user
+from flask import request
+from flask_login import login_user, login_required, logout_user
 from flask_restx import Resource, Namespace, abort
 from sqlalchemy.exc import NoResultFound
 
@@ -29,6 +28,8 @@ class SignUp(Resource):
             user = User(**payload)
             user.set_password(password)
             user.save()
+            login_user(user)
+            return {'data': user_schema.dump(user)}, 201
         else:
             abort(HTTPStatus.BAD_REQUEST, 'No match password')
 
@@ -50,7 +51,7 @@ class SignIn(Resource):
             abort(HTTPStatus.BAD_REQUEST, 'Wrong password')
         else:
             login_user(user)
-            return jsonify(user_schema.dump(user))
+            return {'data': user_schema.dump(user)}
 
 
 @api.route('/signout/')
