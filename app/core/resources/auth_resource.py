@@ -2,6 +2,8 @@ from flask import request, jsonify, session
 from flask_restx import Resource
 from flask_restx import Namespace, fields
 from sqlalchemy.exc import NoResultFound
+from flask_login import login_user
+from flask_login import login_required, current_user, logout_user
 
 from app.core.models.user import signup_schema, signin_schema, User
 
@@ -45,5 +47,14 @@ class SignIn(Resource):
             return 'not match password'
         else:
             # TODO: login process
-            session['user_id'] = user.id
+            login_user(user)
             return 'ok login'
+
+
+@api.route('/signout/')
+class SignOut(Resource):
+
+    @login_required
+    def get(self):
+        logout_user()
+        return 'ok logout bye'
