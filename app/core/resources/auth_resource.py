@@ -1,13 +1,14 @@
-from flask import request, jsonify, session
-from flask_restx import Resource
-from flask_restx import Namespace, fields
-from sqlalchemy.exc import NoResultFound
+from http import HTTPStatus
+
+from flask import request, jsonify
+from flask_login import login_required, logout_user
 from flask_login import login_user
-from flask_login import login_required, current_user, logout_user
+from flask_restx import Resource, Namespace, abort
+from sqlalchemy.exc import NoResultFound
 
-from app.core.models.user import signup_schema, signin_schema, User
+from app.core.models.user import signup_schema, signin_schema, user_schema, User
 
-api = Namespace('auth', description='sign up, sign in, sign out')
+api = Namespace('auth', description='회원가입, 로그인, 로그아웃')
 
 
 @api.route('/signup/')
@@ -16,6 +17,11 @@ class SignUp(Resource):
     def post(self):
         """회원가입"""
         payload = signup_schema.load(request.get_json())
+
+        # 이메일 중복 확인
+        if User.query.filter_by(email=payload.get('email')):
+            abort(HTTPStatus.BAD_REQUEST, 'email already registered')
+
         password = payload.pop('password')
         password_confirm = payload.pop('password_confirm')
 
@@ -24,8 +30,7 @@ class SignUp(Resource):
             user.set_password(password)
             user.save()
         else:
-            # ValueError
-            pass
+            abort(HTTPStatus.BAD_REQUEST, 'No match password')
 
 
 @api.route('/signin/')
@@ -39,22 +44,18 @@ class SignIn(Resource):
         try:
             user = User.query.filter_by(email=payload.get('email')).one()
         except NoResultFound:
-            # TODO: no user error
-            return 'no user'
+            abort(HTTPStatus.UNAUTHORIZED, 'Can not find user for email')
 
         if not user.check_password(password):
-            # TODO: password not match error
-            return 'not match password'
+            abort(HTTPStatus.BAD_REQUEST, 'Wrong password')
         else:
-            # TODO: login process
             login_user(user)
-            return 'ok login'
+            return jsonify(user_schema.dump(user))
 
 
 @api.route('/signout/')
 class SignOut(Resource):
 
     @login_required
-    def get(self):
+    def post(self):
         logout_user()
-        return 'ok logout bye'
