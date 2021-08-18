@@ -3,6 +3,7 @@ from flask_restx import Resource
 from flask_restx import Namespace, fields
 
 from app.core.models.board import Board, board_schema, boards_schema
+from app.core.models.article import articles_schema
 
 api = Namespace('boards', description='board related operations')
 board_model = api.model('board', {
@@ -54,11 +55,13 @@ class BoardRetrieve(Resource):
         return jsonify({'data': None})
 
 
-@api.route('<int:board_id>/articles/')
+@api.route('/<int:board_id>/articles/')
 class BoardWithArticle(Resource):
     def get(self, board_id):
         """get board with articles"""
+        result = {'data': None}
         if board := Board.query.get(board_id):
-            # TODO: some articles
-            pass
+            result['data'] = articles_schema.dump(board.article_set)
+
+        return jsonify(result)
 

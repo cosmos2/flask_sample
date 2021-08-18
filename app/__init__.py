@@ -3,6 +3,7 @@ from flask import Blueprint
 
 from .core.resources.user_resource import api as user_ns
 from .core.resources.board_resource import api as board_ns
+from .core.resources.article_resource import api as article_ns
 
 blueprint = Blueprint('api', __name__)
 
@@ -15,3 +16,4 @@ api = Api(
 
 api.add_namespace(user_ns, path='/users')
 api.add_namespace(board_ns, path='/boards')
+api.add_namespace(article_ns, path='/articles')
