@@ -1,0 +1,1 @@
+# Flask with flask-restx project sample
