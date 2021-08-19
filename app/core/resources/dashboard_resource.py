@@ -11,6 +11,6 @@ api = Namespace('dashbaord', description='대쉬보드')
 class DashboardList(Resource):
 
     @login_required
-    @cache.cached(timeout=60 * 15)
+    @cache.cached(timeout=60 * 10)
     def get(self):
         return dashboard_schema.dump(Board.query.all())

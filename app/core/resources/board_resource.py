@@ -6,6 +6,7 @@ from flask_restx import Resource, Namespace, fields
 
 from app.core.models.article import articles_schema
 from app.core.models.board import Board, board_schema, boards_schema
+from app.core.utils.resource import DefaultResource  as ListResource
 
 api = Namespace('boards', description='board related operations')
 board_model = api.model('board', {
@@ -14,10 +15,11 @@ board_model = api.model('board', {
 
 
 @api.route('/')
-class BoardList(Resource):
+class BoardList(ListResource):
     def get(self):
         """get board list"""
-        boards = Board.query.all()
+        page = request.args.get('page', 1, type=int)
+        boards = self.paginate(Board.query.all(), page)
         return {'data': boards_schema.dump(boards)}
 
     @login_required
@@ -62,13 +64,14 @@ class BoardRetrieve(Resource):
 
 
 @api.route('/<int:board_id>/articles/')
-class BoardWithArticle(Resource):
+class BoardWithArticle(ListResource):
     @login_required
     def get(self, board_id):
         """get board with articles"""
         result = {'data': None}
+        page = request.args.get('page', 1, type=int)
         if board := Board.query.get(board_id):
-            result['data'] = articles_schema.dump(board.article_set)
+            result['data'] = articles_schema.dump(self.paginate(board.article_set, page))
 
         return result
 

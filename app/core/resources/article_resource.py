@@ -6,6 +6,7 @@ from flask_restx import Resource, Namespace, fields, abort
 from marshmallow import ValidationError
 
 from app.core.models.article import Article, article_schema, articles_schema, article_schema_for_response
+from app.core.utils.resource import DefaultResource  as ListResource
 
 api = Namespace('articles', description='articles related operations')
 article_model = api.model('article', {
@@ -15,11 +16,12 @@ article_model = api.model('article', {
 
 
 @api.route('/')
-class ArticleList(Resource):
+class ArticleList(ListResource):
     @login_required
     def get(self):
         """get article list"""
-        articles = Article.query.all()
+        page = request.args.get('page', 1, type=int)
+        articles = self.paginate(Article.query.all(), page)
         return {'data': articles_schema.dump(articles)}
 
     @login_required

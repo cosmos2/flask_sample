@@ -24,6 +24,8 @@ class Config:
     CACHE_REDIS_URL = 'redis://localhost:25100'
     CACHE_DEFAULT_TIMEOUT = 500
 
+    PER_PAGE = 10
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
