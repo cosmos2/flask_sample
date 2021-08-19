@@ -7,7 +7,7 @@ from sqlalchemy.exc import NoResultFound
 
 from app.core.models.user import signup_schema, signin_schema, user_schema, User
 
-api = Namespace('auth', description='회원가입, 로그인, 로그아웃')
+api = Namespace('auth', description='회원가입, 로그인, 로그아웃 관련 API')
 
 
 @api.route('/signup/')
@@ -18,7 +18,7 @@ class SignUp(Resource):
         payload = signup_schema.load(request.get_json())
 
         # 이메일 중복 확인
-        if User.query.filter_by(email=payload.get('email')):
+        if User.query.filter_by(email=payload.get('email')).all():
             abort(HTTPStatus.BAD_REQUEST, 'email already registered')
 
         password = payload.pop('password')

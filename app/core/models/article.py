@@ -1,5 +1,6 @@
 from app.core import db, ma
 from app.core.utils.models import BaseModel
+from app.core.utils.schema import CamelCaseSchema
 
 __all__ = (
     'Article',
@@ -23,7 +24,7 @@ class Article(BaseModel, db.Model):
     board = db.relationship('Board', backref='article_set', lazy=True)
 
 
-class ArticleSchema(ma.SQLAlchemySchema):
+class ArticleSchema(CamelCaseSchema, ma.SQLAlchemySchema):
     class Meta:
         model = Article
         include_fk = True

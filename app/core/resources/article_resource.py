@@ -8,8 +8,9 @@ from marshmallow import ValidationError
 from app.core.models.article import Article, article_schema, articles_schema, article_schema_for_response
 from app.core.utils.resource import DefaultResource  as ListResource
 
-api = Namespace('articles', description='articles related operations')
+api = Namespace('articles', description='게시글 관련 API')
 article_model = api.model('article', {
+    'title': fields.String(description='제목'),
     'content': fields.String(description='내용'),
     'board_id': fields.Integer(description='게시판 아이디'),
 })
@@ -19,7 +20,7 @@ article_model = api.model('article', {
 class ArticleList(ListResource):
     @login_required
     def get(self):
-        """get article list"""
+        """전체 게시글 list"""
         page = request.args.get('page', 1, type=int)
         articles = self.paginate(Article.query.all(), page)
         return {'data': articles_schema.dump(articles)}
@@ -28,7 +29,7 @@ class ArticleList(ListResource):
     @api.response(201, 'Created')
     @api.expect(article_model)
     def post(self):
-        """create new article"""
+        """게시판 보드에 게시글 생성. 게시판 보드 ID 필요"""
         try:
             payload = article_schema.load(request.get_json())
         except ValidationError as e:
@@ -44,14 +45,14 @@ class ArticleList(ListResource):
 class ArticleRetrieve(Resource):
     @login_required
     def get(self, article_id):
-        """get a article"""
+        """특정 게시글"""
         article = Article.query.filter_by(id=article_id).first()
         return {'data': article_schema_for_response.dump(article)}
 
     @login_required
     @api.expect(article_model)
     def patch(self, article_id):
-        """update article"""
+        """게시글 변경"""
         article = Article.query.get(article_id)
         payload = article_schema.load(request.get_json())
 

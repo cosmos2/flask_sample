@@ -8,16 +8,16 @@ from app.core.models.article import articles_schema
 from app.core.models.board import Board, board_schema, boards_schema
 from app.core.utils.resource import DefaultResource  as ListResource
 
-api = Namespace('boards', description='board related operations')
+api = Namespace('boards', description='게시판 보드 관련 API')
 board_model = api.model('board', {
-    'name': fields.String(description='board title')
+    'name': fields.String(description='게시판 보드 이름')
 })
 
 
 @api.route('/')
 class BoardList(ListResource):
     def get(self):
-        """get board list"""
+        """게시판 보드 list"""
         page = request.args.get('page', 1, type=int)
         boards = self.paginate(Board.query.all(), page)
         return {'data': boards_schema.dump(boards)}
@@ -26,7 +26,7 @@ class BoardList(ListResource):
     @api.response(201, 'Created')
     @api.expect(board_model)
     def post(self):
-        """새로운 게시판 생성"""
+        """새로운 게시판 보드 생성"""
         payload = board_schema.load(request.get_json())
         board = Board(**payload)
         board.save()
@@ -37,14 +37,14 @@ class BoardList(ListResource):
 class BoardRetrieve(Resource):
     @login_required
     def get(self, board_id):
-        """get a board"""
+        """특정 게시판 보드 정보"""
         board = Board.query.filter_by(id=board_id).first()
         return {'data': board_schema.dump(board)}
 
     @login_required
     @api.expect(board_model)
     def patch(self, board_id):
-        """update board"""
+        """게시판 보드 변경"""
         board = Board.query.get(board_id)
         payload = board_schema.load(request.get_json())
 
@@ -57,6 +57,7 @@ class BoardRetrieve(Resource):
     @login_required
     @api.response(204, 'No Content')
     def delete(self, board_id):
+        """게시판 보드 삭제"""
         board = Board.query.get(board_id)
         board.delete()
 
@@ -67,7 +68,7 @@ class BoardRetrieve(Resource):
 class BoardWithArticle(ListResource):
     @login_required
     def get(self, board_id):
-        """get board with articles"""
+        """특정 게시판의 게시글 list"""
         result = {'data': None}
         page = request.args.get('page', 1, type=int)
         if board := Board.query.get(board_id):

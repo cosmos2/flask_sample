@@ -1,5 +1,6 @@
 from app.core import db, ma
 from app.core.utils.models import BaseModel
+from app.core.utils.schema import CamelCaseSchema
 
 __all__ = (
     'Board',
@@ -15,7 +16,7 @@ class Board(BaseModel, db.Model):
     name = db.Column(db.String(100))
 
 
-class BoardSchema(ma.SQLAlchemySchema):
+class BoardSchema(CamelCaseSchema, ma.SQLAlchemySchema):
     class Meta:
         model = Board
 

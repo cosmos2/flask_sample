@@ -2,6 +2,7 @@ from flask_login import UserMixin
 
 from app.core import db, ma, bcrypt
 from app.core.utils.models import BaseModel
+from app.core.utils.schema import CamelCaseSchema
 
 __all__ = (
     'User',
@@ -29,7 +30,7 @@ class User(UserMixin, BaseModel, db.Model):
         return password and bcrypt.check_password_hash(self.password, password)
 
 
-class UserSchema(ma.SQLAlchemySchema):
+class UserSchema(CamelCaseSchema, ma.SQLAlchemySchema):
     class Meta:
         model = User
 
@@ -43,7 +44,7 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
 
-class SignInSchema(ma.Schema):
+class SignInSchema(CamelCaseSchema, ma.Schema):
     email = ma.Email(
         required=True,
         metadata={
@@ -73,6 +74,13 @@ class SignUpSchema(SignInSchema):
         metadata={
             'description': '패스워드 재입력',
             'example': 'dlkfji293!23j',
+        },
+    )
+    is_staff = ma.Boolean(
+        required=False,
+        metadata={
+            'description': 'staff 여부',
+            'example': 'true or false',
         },
     )
 
