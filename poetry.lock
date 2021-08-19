@@ -122,6 +122,17 @@ bcrypt = "*"
 Flask = "*"
 
 [[package]]
+name = "flask-caching"
+version = "1.10.1"
+description = "Adds caching support to your Flask application"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+Flask = "*"
+
+[[package]]
 name = "flask-cors"
 version = "3.0.10"
 description = "A Flask extension adding a decorator for CORS support"
@@ -442,7 +453,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "f0815db7ee17ccf318b38ebf3588bb2932901bdf16a776a9bd37ce95c83aa508"
+content-hash = "69ac7f7f1e981108d80ce2f16d4a2bb74f28f761313c2070fc8feb3e6ef8aefe"
 
 [metadata.files]
 alembic = [
@@ -531,6 +542,10 @@ flask = [
 ]
 flask-bcrypt = [
     {file = "Flask-Bcrypt-0.7.1.tar.gz", hash = "sha256:d71c8585b2ee1c62024392ebdbc447438564e2c8c02b4e57b56a4cafd8d13c5f"},
+]
+flask-caching = [
+    {file = "Flask-Caching-1.10.1.tar.gz", hash = "sha256:cf19b722fcebc2ba03e4ae7c55b532ed53f0cbf683ce36fafe5e881789a01c00"},
+    {file = "Flask_Caching-1.10.1-py3-none-any.whl", hash = "sha256:bcda8acbc7508e31e50f63e9b1ab83185b446f6b6318bd9dd1d45626fba2e903"},
 ]
 flask-cors = [
     {file = "Flask-Cors-3.0.10.tar.gz", hash = "sha256:b60839393f3b84a0f3746f6cdca56c1ad7426aa738b70d6c61375857823181de"},

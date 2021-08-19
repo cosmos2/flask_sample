@@ -16,6 +16,14 @@ class Config:
     SESSION_TYPE = 'redis'
     SESSION_REDIS = redis.from_url('redis://localhost:25100')
 
+    # cache
+    CACHE_TYPE = 'RedisCache'
+    CACHE_REDIS_HOST = 'localhost'
+    CACHE_REDIS_PORT = '25100'
+    CACHE_REDIS_DB = 0
+    CACHE_REDIS_URL = 'redis://localhost:25100'
+    CACHE_DEFAULT_TIMEOUT = 500
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
