@@ -14,6 +14,7 @@ api = Api(
     title='Flask project sample',
     version='0.1.0',
     description='Flask with flask-restx',
+    doc='/doc/'
 )
 
 api.add_namespace(user_ns, path='/users')
